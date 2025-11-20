@@ -1,0 +1,72 @@
+{
+  "doors": {
+    "frontLeft": {
+      "position": {
+        "x": -0.04,
+        "y": -0.15,
+        "z": 1
+      },
+      "hingePoint": {
+        "x": 1,
+        "y": 5.95,
+        "z": -0.85
+      },
+      "open": false,
+      "angle": 0
+    },
+    "frontRight": {
+      "position": {
+        "x": -0.04,
+        "y": -0.15,
+        "z": -1.29
+      },
+      "hingePoint": {
+        "x": 1,
+        "y": 5.95,
+        "z": 0.85
+      },
+      "open": false,
+      "angle": 0
+    },
+    "rearLeft": {
+      "position": {
+        "x": -0.05,
+        "y": -0.15,
+        "z": 0.57
+      },
+      "hingePoint": {
+        "x": 0,
+        "y": 5.95,
+        "z": -0.85
+      },
+      "open": false,
+      "angle": 0
+    },
+    "rearRight": {
+      "position": {
+        "x": -0.05,
+        "y": -0.15,
+        "z": -0.744
+      },
+      "hingePoint": {
+        "x": 0,
+        "y": 5.95,
+        "z": 0.85
+      },
+      "open": false,
+      "angle": 0
+    }
+  },
+  "body": {
+    "position": {
+      "x": -0.041066174783976894,
+      "y": -0.15,
+      "z": 0.001404268245350171
+    },
+    "rotation": {
+      "x": 0,
+      "y": 1.5707963267948966,
+      "z": 0
+    }
+  }
+}
