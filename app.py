@@ -16,7 +16,7 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 # web client
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index_icon.html')
 
 #app.register_blueprint(dkms_v1_bp, url_prefix='/service/v1')
 app.register_blueprint(api_bp, url_prefix='/api')

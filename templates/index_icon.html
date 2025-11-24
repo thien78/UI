@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCA E2E Project</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        #data-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 12px;
+            border-radius: 8px;
+            width: 450px;
+            max-width: calc(100vw - 20px);
+            max-height: calc(100vh - 20px);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+        
+        .panel-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #toggle-panel {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            padding: 0;
+            color: #ffffff;
+            transition: transform 0.2s;
+        }
+        
+        #toggle-panel:hover {
+            transform: scale(1.2);
+        }
+        
+        #data-panel.minimized .table-container,
+        #data-panel.minimized #data-filter,
+        #data-panel.minimized .icon-status-container {
+            display: none;
+        }
+        
+        #data-panel h3 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        #entry-counter {
+            font-size: 11px;
+            color: #aaa;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        /* Icon Status Container */
+        .icon-status-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .icon-status {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-status:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-status-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            font-size: 11px;
+            color: #333;
+        }
+        
+        .icon-canvas-wrapper {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .icon-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        
+        .signal-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        .signal-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid;
+            border-radius: 50%;
+            opacity: 0;
+        }
+        
+        /* BLE specific */
+        .ble-icon .signal-ring {
+            border-color: #4a90e2;
+        }
+        
+        .ble-icon.active .icon-canvas {
+            animation: pulse-ble 2s ease-in-out infinite;
+        }
+        
+        .ble-icon.active .signal-ring:nth-child(1) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 0s;
+        }
+        
+        .ble-icon.active .signal-ring:nth-child(2) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 0.8s;
+        }
+        
+        .ble-icon.active .signal-ring:nth-child(3) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 1.6s;
+        }
+        
+        /* UWB specific */
+        .uwb-icon .signal-ring {
+            border-color: #00ff00;
+        }
+        
+        .uwb-icon.active .icon-canvas {
+            animation: pulse-uwb 2s ease-in-out infinite;
+        }
+        
+        .uwb-icon.active .signal-ring:nth-child(1) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 0s;
+        }
+        
+        .uwb-icon.active .signal-ring:nth-child(2) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 0.8s;
+        }
+        
+        .uwb-icon.active .signal-ring:nth-child(3) {
+            animation: signal-wave 3s ease-out infinite;
+            animation-delay: 1.6s;
+        }
+        
+        .icon-status-label {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .status-connected {
+            background: #4ade80;
+            color: #166534;
+        }
+        
+        .status-disconnected {
+            background: #94a3b8;
+            color: #475569;
+        }
+        
+        .status-ranging {
+            background: #22c55e;
+            color: #14532d;
+        }
+        
+        /* Animations */
+        @keyframes pulse-ble {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.5));
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 15px rgba(74, 144, 226, 0.8));
+            }
+        }
+        
+        @keyframes pulse-uwb {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.5));
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.8));
+            }
+        }
+        
+        @keyframes signal-wave {
+            0% {
+                width: 50px;
+                height: 50px;
+                opacity: 0.6;
+            }
+            50% {
+                width: 90px;
+                height: 90px;
+                opacity: 0.3;
+            }
+            100% {
+                width: 120px;
+                height: 120px;
+                opacity: 0;
+            }
+        }
+        
+        #data-filter {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+        
+        .filter-btn {
+            border: none;
+            background: #333;
+            color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover {
+            background: #444;
+            transform: translateY(-1px);
+        }
+        
+        .filter-btn.active {
+            background: #4c8bf5;
+            color: white;
+        }
+        
+        .clear-btn {
+            margin-left: auto;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .clear-btn:hover {
+            background: #ff5252;
+            transform: translateY(-1px);
+        }
+        
+        .help-tip {
+            display: inline-block;
+            margin-left: 5px;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            background: #555;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: help;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 0;
+            max-height: 273px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 4px;
+        }
+        
+        /* Custom scrollbar for dark theme */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+        
+        #data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+            table-layout: fixed;
+        }
+        
+        #data-table th, #data-table td {
+            border: 1px solid #444;
+            padding: 8px 6px;
+            font-size: 12px;
+            color: #e0e0e0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Column widths */
+        #data-table th:nth-child(1),
+        #data-table td:nth-child(1) { width: 15%; } /* Source */
+        
+        #data-table th:nth-child(2),
+        #data-table td:nth-child(2) { width: 25%; } /* Event */
+        
+        #data-table th:nth-child(3),
+        #data-table td:nth-child(3) { width: 20%; } /* From */
+        
+        #data-table th:nth-child(4),
+        #data-table td:nth-child(4) { width: 20%; } /* To */
+        
+        #data-table th:nth-child(5),
+        #data-table td:nth-child(5) { width: 20%; } /* Time */
+        
+        #data-table th {
+            position: sticky;
+            top: 0;
+            background-color: #1a1a1a;
+            text-align: left;
+            z-index: 10;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        #data-table tr.highlight {
+            background-color: rgba(74, 144, 226, 0.2);
+        }
+        
+        #data-table tr.alt-row {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        #data-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        #data-table tr.new-entry {
+            animation: highlight-new 2s ease-out;
+        }
+        
+        @keyframes highlight-new {
+            0% { background-color: rgba(255, 255, 0, 0.3); }
+            100% { background-color: transparent; }
+        }
+        
+        #status {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 100;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div id="data-panel">
+        <div class="panel-header">
+            <h3>System Events</h3>
+            <div class="panel-controls">
+                <div id="entry-counter">0 entries</div>
+                <button id="toggle-panel" title="Minimize/Expand">−</button>
+            </div>
+        </div>
+        
+        <!-- Icon Status Section -->
+        <div class="icon-status-container">
+            <!-- BLE Icon -->
+            <div class="icon-status ble-icon" id="ble-status-card">
+                <div class="icon-status-header">
+                    <span>📶</span>
+                    <span>BLE</span>
+                </div>
+                <div class="icon-canvas-wrapper">
+                    <canvas id="ble-icon-canvas" class="icon-canvas" width="100" height="100"></canvas>
+                    <div class="signal-rings">
+                        <div class="signal-ring"></div>
+                        <div class="signal-ring"></div>
+                        <div class="signal-ring"></div>
+                    </div>
+                </div>
+                <div class="icon-status-label status-disconnected" id="ble-status-text">Disconnected</div>
+            </div>
+            
+            <!-- UWB Icon -->
+            <div class="icon-status uwb-icon" id="uwb-status-card">
+                <div class="icon-status-header">
+                    <span>📡</span>
+                    <span>UWB</span>
+                </div>
+                <div class="icon-canvas-wrapper">
+                    <canvas id="uwb-icon-canvas" class="icon-canvas" width="100" height="100"></canvas>
+                    <div class="signal-rings">
+                        <div class="signal-ring"></div>
+                        <div class="signal-ring"></div>
+                        <div class="signal-ring"></div>
+                    </div>
+                </div>
+                <div class="icon-status-label status-inactive" id="uwb-status-text">Inactive</div>
+            </div>
+        </div>
+        
+        <div id="data-filter">
+            <!-- Filter buttons will be inserted here dynamically -->
+        </div>
+        
+        <div class="table-container">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Event</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="status">Loading models...</div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="static/scene.js"></script>
+    <script type="module" src="static/car.js"></script>                                                                         
+    <script type="module" src="static/user.js"></script>
+    <script type="module" src="static/ble_icon_panel.js"></script>
+    <script type="module" src="static/uwb_icon_panel.js"></script>
+    <script type="module" src="static/welcome_light.js"></script>
+    <script type="module" src="static/panel.js"></script>
+    <script type="module" src="static/connection.js"></script>
+    <script type="module" src="static/door.js"></script>
+    <script type="module" src="static/ranging.js"></script>
+</body>
+</html>
