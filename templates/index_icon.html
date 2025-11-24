@@ -23,15 +23,15 @@
             position: fixed;
             top: 10px;
             right: 10px;
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             padding: 12px;
             border-radius: 8px;
             width: 450px;
             max-width: calc(100vw - 20px);
             max-height: calc(100vh - 20px);
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -54,14 +54,14 @@
         #toggle-panel {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
             text-align: center;
             padding: 0;
-            color: #ffffff;
+            color: #333;
             transition: transform 0.2s;
         }
         
@@ -77,15 +77,15 @@
         
         #data-panel h3 {
             margin: 0;
-            color: #ffffff;
+            color: #333;
             font-size: 16px;
             font-weight: 600;
         }
         
         #entry-counter {
-            font-size: 11px;
-            color: #aaa;
-            background: rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: #666;
+            background: transparent;
             padding: 2px 6px;
             border-radius: 10px;
         }
@@ -124,10 +124,12 @@
         .icon-status-header {
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            gap: 6px;
             font-weight: 600;
             font-size: 11px;
             color: #333;
+            width: 100%;
         }
         
         .icon-canvas-wrapper {
@@ -140,6 +142,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
+            background: #000000;
         }
         
         .signal-rings {
@@ -228,8 +231,18 @@
         }
         
         .status-ranging {
-            background: #22c55e;
-            color: #14532d;
+            background: #4ade80;
+            color: #166534;
+        }
+        
+        .status-inactive {
+            background: #94a3b8;
+            color: #475569;
+        }
+        
+        .status-na {
+            background: #94a3b8;
+            color: #475569;
         }
         
         /* Animations */
@@ -283,18 +296,18 @@
         
         .filter-btn {
             border: none;
-            background: #333;
-            color: #e0e0e0;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 11px;
+            background: #eee;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            font-weight: 500;
+            font-weight: normal;
         }
         
         .filter-btn:hover {
-            background: #444;
+            background: #ddd;
             transform: translateY(-1px);
         }
         
@@ -308,12 +321,12 @@
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            font-weight: 500;
+            font-weight: normal;
         }
         
         .clear-btn:hover {
@@ -328,10 +341,10 @@
             height: 16px;
             line-height: 16px;
             text-align: center;
-            background: #555;
+            background: #777;
             color: white;
             border-radius: 50%;
-            font-size: 10px;
+            font-size: 11px;
             cursor: help;
             font-weight: bold;
         }
@@ -341,28 +354,28 @@
             overflow-y: auto;
             overflow-x: hidden;
             min-height: 0;
-            max-height: 273px;
-            background: rgba(30, 30, 30, 0.5);
+            max-height: 40vh;
+            background: transparent;
             border-radius: 4px;
         }
         
-        /* Custom scrollbar for dark theme */
+        /* Custom scrollbar */
         .table-container::-webkit-scrollbar {
             width: 8px;
         }
         
         .table-container::-webkit-scrollbar-track {
-            background: #1a1a1a;
+            background: #f5f5f5;
             border-radius: 4px;
         }
         
         .table-container::-webkit-scrollbar-thumb {
-            background: #555;
+            background: #ccc;
             border-radius: 4px;
         }
         
         .table-container::-webkit-scrollbar-thumb:hover {
-            background: #777;
+            background: #999;
         }
         
         #data-table {
@@ -373,10 +386,10 @@
         }
         
         #data-table th, #data-table td {
-            border: 1px solid #444;
-            padding: 8px 6px;
-            font-size: 12px;
-            color: #e0e0e0;
+            border: 1px solid #ddd;
+            padding: 6px;
+            font-size: 13px;
+            color: #333;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -401,10 +414,10 @@
         #data-table th {
             position: sticky;
             top: 0;
-            background-color: #1a1a1a;
+            background-color: #f2f2f2;
             text-align: left;
             z-index: 10;
-            color: #ffffff;
+            color: #333;
             font-weight: 600;
             font-size: 11px;
             text-transform: uppercase;
@@ -412,15 +425,15 @@
         }
         
         #data-table tr.highlight {
-            background-color: rgba(74, 144, 226, 0.2);
+            background-color: rgba(144, 238, 144, 0.3);
         }
         
         #data-table tr.alt-row {
-            background-color: rgba(255, 255, 255, 0.03);
+            background-color: rgba(0, 0, 0, 0.03);
         }
         
         #data-table tr:hover {
-            background-color: rgba(255, 255, 255, 0.08);
+            background-color: rgba(0, 0, 0, 0.05);
         }
         
         #data-table tr.new-entry {
@@ -428,7 +441,7 @@
         }
         
         @keyframes highlight-new {
-            0% { background-color: rgba(255, 255, 0, 0.3); }
+            0% { background-color: rgba(255, 255, 0, 0.5); }
             100% { background-color: transparent; }
         }
         
@@ -442,12 +455,6 @@
             border-radius: 4px;
             font-size: 12px;
             z-index: 100;
-        }
-        
-        button {
-            margin: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -467,7 +474,13 @@
             <!-- BLE Icon -->
             <div class="icon-status ble-icon" id="ble-status-card">
                 <div class="icon-status-header">
-                    <span>📶</span>
+                    <svg class="icon-svg ble-svg" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="8" y1="2" x2="8" y2="14" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M8 2 L12 5.5 L8 8" stroke="#4a90e2" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+                        <path d="M8 8 L12 10.5 L8 14" stroke="#4a90e2" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+                        <line x1="4" y1="5.5" x2="12" y2="10.5" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                        <line x1="4" y1="10.5" x2="12" y2="5.5" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
                     <span>BLE</span>
                 </div>
                 <div class="icon-canvas-wrapper">
@@ -484,7 +497,23 @@
             <!-- UWB Icon -->
             <div class="icon-status uwb-icon" id="uwb-status-card">
                 <div class="icon-status-header">
-                    <span>📡</span>
+                    <svg class="icon-svg uwb-svg" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(8 8) rotate(90) scale(1.2 1.0) translate(-8 -8)">
+                        <circle cx="8" cy="8" r="1.5" fill="#00cc00"/>
+                        <path d="M5 8 Q5 6 6.5 5" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M3.5 8 Q3.5 4.5 6 3" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M2 8 Q2 3 5.5 1" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M11 8 Q11 6 9.5 5" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M12.5 8 Q12.5 4.5 10 3" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M14 8 Q14 3 10.5 1" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M5 8 Q5 10 6.5 11" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M3.5 8 Q3.5 11.5 6 13" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M2 8 Q2 13 5.5 15" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M11 8 Q11 10 9.5 11" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M12.5 8 Q12.5 11.5 10 13" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        <path d="M14 8 Q14 13 10.5 15" stroke="#00cc00" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                        </g>
+                    </svg>
                     <span>UWB</span>
                 </div>
                 <div class="icon-canvas-wrapper">
@@ -495,7 +524,7 @@
                         <div class="signal-ring"></div>
                     </div>
                 </div>
-                <div class="icon-status-label status-inactive" id="uwb-status-text">Inactive</div>
+                <div class="icon-status-label status-na" id="uwb-status-text">NA</div>
             </div>
         </div>
         

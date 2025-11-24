@@ -4,10 +4,6 @@
  */
 import { dataPanel } from './panel.js';
 
-console.log("========================================");
-console.log("[BLE Icon Panel] Module loading...");
-console.log("========================================");
-
 // Constants
 const CONFIG = {
     POLL_INTERVAL: 576,
@@ -64,7 +60,6 @@ class BLEIconPanelManager {
     
     delayedInit() {
         setTimeout(() => {
-            console.log("[BLE Icon Panel] Initializing BLE icon in panel...");
             this.init();
             this.startConnectionPolling();
         }, CONFIG.INIT_DELAY);
@@ -80,7 +75,6 @@ class BLEIconPanelManager {
         this.drawBLEIcon();
         this.startAnimation();
         
-        console.log("[BLE Icon Panel] ✅ BLE icon initialized in panel (disconnected)");
     }
     
     initializeElements() {
@@ -233,7 +227,6 @@ class BLEIconPanelManager {
         poll();
         setInterval(poll, CONFIG.POLL_INTERVAL);
         
-        console.log(`[BLE Icon Panel] 📡 Connection polling started (${CONFIG.POLL_INTERVAL}ms interval)`);
     }
     
     updateConnectionState(bleStatus) {
@@ -255,11 +248,9 @@ class BLEIconPanelManager {
     logStateChange(newState) {
         const oldState = this.previousConnectionState ? 'Connected' : 'Disconnected';
         const currentState = newState ? 'Connected' : 'Disconnected';
-        console.log(`[BLE Icon Panel] 🔄 BLE Status changed: ${oldState} → ${currentState}`);
     }
     
     onConnected() {
-        console.log("[BLE Icon Panel] ✅ BLE CONNECTED - Activating animations!");
         this.isConnected = true;
         this.animations.pulse = true;
         this.animations.waves = true;
@@ -270,7 +261,6 @@ class BLEIconPanelManager {
     }
     
     onDisconnected() {
-        console.log("[BLE Icon Panel] ❌ BLE DISCONNECTED - Deactivating animations!");
         this.isConnected = false;
         this.animations.pulse = false;
         this.animations.waves = false;
@@ -284,16 +274,20 @@ class BLEIconPanelManager {
     updateUI(text, className) {
         this.statusText.textContent = text;
         this.statusText.className = `icon-status-label ${className}`;
+        // Toggle 'active' class for CSS animations (signal waves)
+        if (this.isConnected) {
+            this.statusCard.classList.add('active');
+        } else {
+            this.statusCard.classList.remove('active');
+        }
     }
     
     // Manual control methods (for testing)
     forceConnect() {
-        console.log("[BLE Icon Panel] 🧪 Force connecting (test mode)");
         this.updateConnectionState("Connected");
     }
     
     forceDisconnect() {
-        console.log("[BLE Icon Panel] 🧪 Force disconnecting (test mode)");
         this.updateConnectionState("Disconnected");
     }
     
@@ -303,13 +297,11 @@ class BLEIconPanelManager {
     }
     
     playConnectedAnimation() {
-        console.log("[BLE Icon Panel] 🎉 Connected animation!");
         this.forceConnect();
         this.flashStatusCard();
     }
     
     playDisconnectedAnimation() {
-        console.log("[BLE Icon Panel] ⚠️ Disconnected animation");
         this.forceDisconnect();
     }
     

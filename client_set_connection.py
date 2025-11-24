@@ -6,7 +6,7 @@ import time
 
 # SERVER_URL = 'http://127.0.0.1/api'
 # SERVER_URL = 'http://10.102.50.15/api'
-SERVER_URL = 'http://192.168.1.4/api/'
+SERVER_URL = 'http://192.168.8.10/api/'
 
   
 class PositionGenerator:
