@@ -182,7 +182,7 @@ class UWBIconPanelManager {
         this.ctx.arc(0, 0, dotRadius, 0, Math.PI * 2);
         this.ctx.fill();
         
-        // Left waves (3 arcs) - từ góc 1.1π đến 1.9π
+        // above waves (3 arcs) - 1.1π - 1.9π
         for (let i = 1; i <= UWB_LOGO.WAVE_COUNT; i++) {
             const radius = waveSpacing * i;
             this.ctx.beginPath();
@@ -190,7 +190,7 @@ class UWBIconPanelManager {
             this.ctx.stroke();
         }
         
-        // Right waves (3 arcs) - từ góc 0.1π đến 0.9π
+        // below waves (3 arcs) - 0.1π - 0.9π
         for (let i = 1; i <= UWB_LOGO.WAVE_COUNT; i++) {
             const radius = waveSpacing * i;
             this.ctx.beginPath();

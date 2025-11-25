@@ -11,7 +11,7 @@
         
         body {
             margin: 0;
-            overflow: hidden;
+            
             font-family: Arial, sans-serif;
         }
         
@@ -34,7 +34,7 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            
         }
         
         .panel-header {
@@ -112,7 +112,7 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 5px;
             position: relative;
-            overflow: hidden;
+            
             transition: all 0.3s ease;
         }
         
@@ -352,7 +352,7 @@
         .table-container {
             flex: 1;
             overflow-y: auto;
-            overflow-x: hidden;
+            overflow-x: auto;
             min-height: 0;
             max-height: 40vh;
             background: transparent;
@@ -382,7 +382,7 @@
             width: 100%;
             border-collapse: collapse;
             background: transparent;
-            table-layout: fixed;
+            table-layout: auto;
         }
         
         #data-table th, #data-table td {
@@ -390,26 +390,26 @@
             padding: 6px;
             font-size: 13px;
             color: #333;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            
+            
             white-space: nowrap;
         }
         
         /* Column widths */
         #data-table th:nth-child(1),
-        #data-table td:nth-child(1) { width: 15%; } /* Source */
+        #data-table td:nth-child(1) { min-width: 80px; } /* Source */
         
         #data-table th:nth-child(2),
-        #data-table td:nth-child(2) { width: 25%; } /* Event */
+        #data-table td:nth-child(2) { min-width: 100px; } /* Event */
         
         #data-table th:nth-child(3),
-        #data-table td:nth-child(3) { width: 20%; } /* From */
+        #data-table td:nth-child(3) { min-width: 70px; } /* From */
         
         #data-table th:nth-child(4),
-        #data-table td:nth-child(4) { width: 20%; } /* To */
+        #data-table td:nth-child(4) { min-width: 70px; } /* To */
         
         #data-table th:nth-child(5),
-        #data-table td:nth-child(5) { width: 20%; } /* Time */
+        #data-table td:nth-child(5) { min-width: 70px; } /* Time */
         
         #data-table th {
             position: sticky;

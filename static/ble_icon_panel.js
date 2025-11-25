@@ -67,7 +67,6 @@ class BLEIconPanelManager {
     
     init() {
         if (!this.initializeElements()) {
-            console.error("[BLE Icon Panel] Canvas not found!");
             return;
         }
         
@@ -220,7 +219,6 @@ class BLEIconPanelManager {
                 if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
                     return; // Server unavailable - silent fail
                 }
-                console.error("[BLE Icon Panel] Error fetching connection status:", error);
             }
         };
         
